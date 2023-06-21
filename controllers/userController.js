@@ -5,9 +5,11 @@ module.exports = {
   async getUsers(req, res) {
     try {
       const users = await User.find();
-      res.json(users);
+      res.status(200).json(users);
+      console.log("Users:"+ users)
     } catch (err) {
       res.status(500).json(err);
+      console.log('error getting users!')
     }
   },
   // Get a single user
@@ -20,7 +22,7 @@ module.exports = {
         return res.status(404).json({ message: 'No user with that ID' });
       }
 
-      res.json(user);
+      res.status(200).json(user);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -29,9 +31,11 @@ module.exports = {
   async createUser(req, res) {
     try {
       const user = await User.create(req.body);
-      res.json(user);
+      res.status(200).json(user);
+      console.log('user created:'+ user);
     } catch (err) {
       res.status(500).json(err);
+      console.log('Error creating user')
     }
   },
   // Delete a user and associated apps
@@ -43,10 +47,21 @@ module.exports = {
         return res.status(404).json({ message: 'No user with that ID' });
       }
 
-      await Application.deleteMany({ _id: { $in: user.applications } });
-      res.json({ message: 'User and associated apps deleted!' })
+      await Application.deleteMany({ _id: { $in: user.thoughts } });
+      res.json({ message: 'User and associated thoughts deleted!' })
     } catch (err) {
       res.status(500).json(err);
     }
   },
+  //Update a user
+  async updateUser(req,res){
+    try {
+      const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body);
+      res.status(200).json(updatedUser);
+      console.log('User updated:', updatedUser)
+    } catch (err) {
+      res.status(500).json(err);
+      console.error('Error updating user');
+    }
+  }
 };
