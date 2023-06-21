@@ -56,7 +56,7 @@ module.exports = {
   //Update a user
   async updateUser(req,res){
     try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body);
+      const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body,{ new: true });
       res.status(200).json(updatedUser);
       console.log('User updated:', updatedUser)
     } catch (err) {
