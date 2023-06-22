@@ -1,4 +1,4 @@
-const {User} = require('../models');
+const {User, Thought} = require('../models');
 
 module.exports = {
   //// User section
@@ -42,14 +42,19 @@ module.exports = {
   // Delete a user and associated apps
   async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndDelete({ _id: req.params.userId });
+       // Find the user by ID
+    const user = await User.findById(req.params.userId);
 
-      if (!user) {
-        return res.status(404).json({ message: 'No user with that ID' });
-      }
+    // Get the array of thought IDs associated with the user
+    const thoughtIds = user.thoughts;
 
-      await Application.deleteMany({ _id: { $in: user.thoughts } });
-      res.json({ message: 'User and associated thoughts deleted!' })
+    // Delete all thoughts associated with the user
+    await Thought.deleteMany({ _id: { $in: thoughtIds } });
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+      
+    res.status(200).json({ message: 'User and associated thoughts deleted!' })
     } catch (err) {
       res.status(500).json(err);
     }
@@ -82,10 +87,14 @@ module.exports = {
   async deleteFriend(req,res){
     try {
       const user = await User.findOne({ _id: req.params.userId });
-      
-      const index = user.friends.indexOf(req.params.friendId);
+      console.log(user);
+      const friend = await User.findOne({_id: req.params.friendId});
+      console.log(friend._id);
+      const index = user.friends.indexOf(friend._id);
+      console.log('index');
+      console.log(index);
       if (index !== -1) {
-      array.splice(index, 1);
+      user.friends.splice(index, 1);
       }else{
         res.status(404).json({ message: 'User has no friends with that Id' })
       }
