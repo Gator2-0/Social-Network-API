@@ -1,4 +1,4 @@
-const User = require('../models');
+const {User} = require('../models');
 
 module.exports = {
   // Get all users
@@ -62,6 +62,37 @@ module.exports = {
     } catch (err) {
       res.status(500).json(err);
       console.error('Error updating user');
+    }
+  },
+  // adding friend to user
+  async addFriend(req,res){
+    try {
+      const user = await User.findOne({ _id: req.params.userId });
+      user.friends.push(req.params.friendId);
+      await user.save();
+
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // deleting Friend from user
+  async deleteFriend(req,res){
+    try {
+      const user = await User.findOne({ _id: req.params.userId });
+      
+      const index = array.indexOf(req.params.friendId);
+      if (index !== -1) {
+      array.splice(index, 1);
+      }else{
+        res.status(404).json({ message: 'User has no friends with that Id' })
+      }
+
+      await user.save();
+
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json(err);
     }
   }
 };
