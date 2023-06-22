@@ -74,7 +74,7 @@ module.exports = {
       }
       
       console.log(thought);
-      res.status(200).json(reaction);
+      res.status(200).json(thought);
     } catch (err) {
       res.status(500).json(err);
       console.log('error creating reaction!')
