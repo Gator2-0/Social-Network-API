@@ -1,4 +1,4 @@
-const {Thought, User} = require('../models');
+const {Thought, User, Reaction} = require('../models');
 
 module.exports = {
   //// thought section
@@ -17,10 +17,20 @@ module.exports = {
       console.log('Error creating thought')
     }
   },
-  //Get thought
+  //Get all thoughts
   async getThought(req,res){
     try {
       const thoughts =  await Thought.find();
+      res.status(200).json(thoughts);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log('error getting thoughts!')
+    }
+  },
+  //Get one thought
+  async getSingleThought(req,res){
+    try {
+      const thoughts =  await Thought.findById(req.params._id);
       res.status(200).json(thoughts);
     } catch (err) {
       res.status(500).json(err);
@@ -50,4 +60,33 @@ module.exports = {
   },
   //// Reaction section
   // 
+  async addReaction(req,res){
+    try {
+      const reaction = await Reaction.create(req.body);
+
+      const thought = await Thought.findById(req.params.thoughtId);
+      thought.reactions.push(reaction._id);
+      await thought.save();
+
+      res.status(200).json(reaction);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log('error creating reaction!')
+    }
+  },
+  //delete Reaction
+  async deleteReaction(req,res){
+    try {
+      const updatedThought = await Thought.findByIdAndUpdate(
+        req.params,thoughtId,
+        { $pull: { reactions: { reactionId: reactionId } }, $unset: { "reactions.$._id": 1 } },
+        { new: true }
+      );
+      const reaction = await Reaction.findOneAndDelete(req.params.reactionId);
+      
+      res.status(200).json({message: 'Reaction removed succesfully'});
+    } catch (err) {
+      
+    }
+  }
 }
