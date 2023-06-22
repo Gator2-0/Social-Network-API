@@ -1,11 +1,11 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 
 // Schema to create Reaction model
 const reactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId()
+    default: () => new Types.ObjectId(),
   },
   reactionBody: {
     type: String,
@@ -23,10 +23,11 @@ const reactionSchema = new Schema({
   }
 },{
   toJSON: {
-    virtuals: true,
+    getters: true,
   },
   id: false,
-})
+});
+
 
 // Schema to create Thoughts model
 const thoughtSchema = new Schema(
@@ -69,5 +70,4 @@ thoughtSchema
   })
 
 const Thought = model('thought', thoughtSchema);
-const Reaction = model('reaction', reactionSchema);
-module.exports = {Thought,Reaction};
+module.exports = {Thought};
