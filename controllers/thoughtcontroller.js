@@ -1,6 +1,7 @@
 const {Thought, User} = require('../models');
 
 module.exports = {
+  //// thought section
   //Create thought
   async createThought(req,res) {
     try {
@@ -46,5 +47,7 @@ module.exports = {
       res.status(500).json(err);
       console.log('error deleting thought!')
     }
-  }
+  },
+  //// Reaction section
+  // 
 }

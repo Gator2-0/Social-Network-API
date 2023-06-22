@@ -1,6 +1,7 @@
 const {User} = require('../models');
 
 module.exports = {
+  //// User section
   // Get all users
   async getUsers(req, res) {
     try {
@@ -64,6 +65,7 @@ module.exports = {
       console.error('Error updating user');
     }
   },
+  //// Friend section
   // adding friend to user
   async addFriend(req,res){
     try {
@@ -81,7 +83,7 @@ module.exports = {
     try {
       const user = await User.findOne({ _id: req.params.userId });
       
-      const index = array.indexOf(req.params.friendId);
+      const index = user.friends.indexOf(req.params.friendId);
       if (index !== -1) {
       array.splice(index, 1);
       }else{
